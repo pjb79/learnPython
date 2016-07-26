@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
-
+import itertools
 
 df=pd.read_excel("C:\\D\\F_SVN\\prod\\cntl files\\2016-06\\cntl_allRegions_placemat.xls")
 
@@ -25,9 +25,20 @@ varNames = df['variable name (If blank, all variables are obtained)']
 ind = pd.notnull(varNames)
 varNames = varNames[ind].tolist()
 
-flm = os.listdir(searchDirs[0])
-        
-    
+flm = []
+fileInd = []
+
+for sDir in searchDirs:
+    currentDirFiles = os.listdir(sDir)    
+
+    for f in currentDirFiles:
+        fileInd.append(os.path.isfile(sDir + f))
+        flm.append(sDir + f)
+
+flm = list(itertools.compress(flm, fileInd))
+#flmList = flmList(fileInd)
+
+   
 
 
 
