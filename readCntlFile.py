@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import os
 import itertools
+import h5Test as h5
 
 df=pd.read_excel("C:\\D\\F_SVN\\prod\\cntl files\\2016-06\\cntl_allRegions_placemat.xls")
 
@@ -36,8 +37,20 @@ for sDir in searchDirs:
         flm.append(sDir + f)
 
 flm = list(itertools.compress(flm, fileInd))
+
+simNames = []
+for f in flm:
+    simName = h5.getSimNames(f)
+    simNames.extend(simName)
+    
+    
 #flmList = flmList(fileInd)
 
+flm = np.array(flm)
+
+vlm = np.vstack([flm,simNames])
+
+vlm = np.transpose(vlm)
    
 
 

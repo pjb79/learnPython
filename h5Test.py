@@ -30,5 +30,30 @@ def importSimObj(strPath):
     output.append(simMatrix)
     return
     
+def getSimNames(strPath):
+    import numpy as np
+    import h5py
+    
+    f = h5py.File(strPath,"r")
+    
+    s = f['simNames'];
+    s=s[0].tolist()
+    simNames = [];
+    
+    for simNameRef in s:
+    
+        simName = f[simNameRef]    
+        simName = np.array(simName)
+        simName = simName.tolist();
+        
+        simName = [simNameElement[0] for simNameElement in simName]
+    
+        simName = ''.join(chr(i) for i in simName)
+         
+        simNames.append(simName)
+    
+
+    return simNames
+    
 
     
