@@ -21,30 +21,27 @@ def fileLocationMap(searchDirs):
 def varLocationMap(flm):
     import numpy as np
     import sim_manager as sm
-  
-    simNamesAll = []
+      
+    vlm = np.empty((0,2))
+    
     for f in flm:
-        simNames = sm.getSimNames(f)
+        simNames = np.array(sm.getSimNames(f))
         fileLocations = np.tile(f,len(simNames))
-        fileVLM = np.hstack([fileLocations,simNames])
-        simNamesAll.extend(simNames)
-        
-        
-    vlm = np.vstack([flm,simNamesAll])
+        fileVLM = np.vstack([fileLocations,simNames]).T
+        vlm = np.vstack([vlm,fileVLM])
     
-    vlm = np.transpose(vlm)
-    
+    vlm = dict(zip(vlm[:,1], vlm[:,0]))
     return vlm
 
     
-def readcntlFile(cntlPath):
+def readCntlFile(cntlPath):
     import numpy as np
     import pandas as pd
     import os
     import itertools
     import h5Test as h5
     
-    df=pd.read_excel("C:\\D\\F_SVN\\prod\\cntl files\\2016-06\\cntl_allRegions_placemat.xls")
+    df=pd.read_excel(cntlPath)
     
     n = len(df.index)
     
@@ -66,23 +63,11 @@ def readcntlFile(cntlPath):
     ind = pd.notnull(varNames)
     varNames = varNames[ind].tolist()
     
+    flm = fileLocationMap(searchDirs)
+    vlm = varLocationMap(flm)
     
-    
-    simNames = []
-    for f in flm:
-        simName = h5.getSimNames(f)
-        simNames.extend(simName)
-        
-        
-    #flmList = flmList(fileInd)
-    
-    flm = np.array(flm)
-    
-    vlm = np.vstack([flm,simNames])
-    
-    vlm = np.transpose(vlm)
-    
-    return
+    yield varNames
+    yield vlm
    
 
 
