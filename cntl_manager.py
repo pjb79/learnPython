@@ -41,7 +41,7 @@ def readCntlFile(cntlPath):
     import itertools
     import h5Test as h5
     
-    df=pd.read_excel(cntlPath)
+    df=pd.read_excel(cntlPath, sheetname="AUD")
     
     n = len(df.index)
     
@@ -49,7 +49,7 @@ def readCntlFile(cntlPath):
         if(pd.isnull(df.iloc[r,0])):
             df.iloc[r,0] = df.iloc[r-1,0]
             
-    ind = df['account name'] == "Standard"
+    ind = df['account name'] == "AUD_AfterTax"
     df = df.loc[ind,:]
     
     searchDirs = df['directories to be searched']
