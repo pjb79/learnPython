@@ -35,9 +35,12 @@ def getSimData(simName, vlm):
     simMatrix = np.array(f['simMatrix'])
     simMatrix = np.transpose(simMatrix,(2,1,0))    
     simMatrix = simMatrix[varLoc,:,:]
-
+    simMatrix = simMatrix.reshape(1,600,5000)
     
     return simMatrix
+    
+def createSimMgrObj(cntlPath, sheet, account):
+    
     
 
     
