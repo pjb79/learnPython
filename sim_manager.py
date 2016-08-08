@@ -32,16 +32,15 @@ def getSimData(simName, vlm):
     
     f = h5py.File(vlm[simName],"r")
     
-    simMatrix = np.array(f['simMatrix'])
+    simMatrix = np.array(f['simMatrix'][:,:,varLoc])
+    simMatrix = simMatrix.reshape(5000,600,1)    
     simMatrix = np.transpose(simMatrix,(2,1,0))    
-    simMatrix = simMatrix[varLoc,:,:]
-    simMatrix = simMatrix.reshape(1,600,5000)
     
-    return simMatrix
+    return simMatrix, varLoc
     
 def createSimMgrObj(cntlPath, sheet, account):
     
-    
+    return   
 
     
 

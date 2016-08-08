@@ -66,8 +66,7 @@ def readCntlFile(cntlPath):
     flm = fileLocationMap(searchDirs)
     vlm = varLocationMap(flm)
     
-    yield varNames
-    yield vlm
+    return varNames, vlm
    
 
 
