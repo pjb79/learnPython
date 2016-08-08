@@ -39,9 +39,16 @@ def getSimData(simName, vlm):
     return simMatrix, varLoc
     
 def createSimMgrObj(cntlPath, sheet, account):
+    import cntl_manager as cm
+    import numpy as np
     
-    return   
+    simNames, vlm = cm.readCntlFile(cntlPath, sheet, account)
+    
+    simMatrix = np.empty((0,600,5000))
 
+    for v in simNames:
+        
+        simMatrix = np.concatenate([simMatrix, getSimData(v,vlm)],axis=0)
     
+    return simNames, simMatrix   
 
-    
