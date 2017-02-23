@@ -13,8 +13,8 @@ import pandas as pd
 plt.close('all')
 
 ## import data to pandas and prepare 
-#df              = pd.read_csv('C:\\Users\\pjbca\\Downloads\\Transactions.csv')
-df              = pd.read_csv('C:\\Users\\PBallant\\Downloads\\Transactions (4).csv')
+df              = pd.read_csv('C:\\Users\\pjbca\\Downloads\\Transactions.csv')
+#df              = pd.read_csv('C:\\Users\\PBallant\\Downloads\\Transactions (4).csv')
 
 # drop unwanted columns
 df.drop(['Credit', 'Balance'], axis = 1, inplace = True)
@@ -100,7 +100,7 @@ df['vendor']  = df['vendor'].str.extract('(.*).-', expand = False)
 
 tableVendor = df.pivot_table(index = 'monthEnd', columns = 'vendor', values = 'Debit', fill_value = 0, aggfunc = np.sum)
 columnNames = list(tableVendor.columns.values)
-values      = tableVendor.loc[dt.datetime(2016,11,30),:].tolist()
+values      = tableVendor.loc[dt.datetime(2015,12,31):dt.datetime(2016,12,31),:].mean().tolist()
 colData     = list(zip(columnNames, values))
 colData     = sorted(colData, key = lambda x: x[1])
 columnNames = [x[0] for x in colData]
