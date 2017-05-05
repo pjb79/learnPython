@@ -13,7 +13,7 @@ plt.style.use('ggplot')
 # TODO: Load up the Seeds Dataset into a Dataframe
 # It's located at 'Datasets/wheat.data'
 # 
-# .. your code here ..
+df = pd.read_csv('C:\\D\\GitHub\\learnPython\\DAT210x-master\\Module3\\Datasets\\wheat.data', index_col = 'id')
 
 
 
@@ -22,7 +22,7 @@ plt.style.use('ggplot')
 # (Hint: You shouldn't have)
 # Also get rid of the 'area' and 'perimeter' features
 # 
-# .. your code here ..
+df.drop(['area','perimeter'], axis = 1, inplace = True)
 
 
 
@@ -33,8 +33,9 @@ plt.style.use('ggplot')
 # 
 # .. your code here ..
 
+plt.figure()
+parallel_coordinates(df,'wheat_type', alpha = 0.4)
 
 
-plt.show()
 
 
