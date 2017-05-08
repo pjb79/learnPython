@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
 import assignment2_helper as helper
+from sklearn.decomposition import PCA
 
 # Look pretty...
 # matplotlib.style.use('ggplot')
@@ -9,7 +10,7 @@ plt.style.use('ggplot')
 
 
 # Do * NOT * alter this line, until instructed!
-scaleFeatures = False
+scaleFeatures = True
 
 
 # TODO: Load up the dataset and remove any and all
@@ -18,8 +19,8 @@ scaleFeatures = False
 #
 # QUESTION: Should the id column be included as a
 # feature?
-#
-# .. your code here ..
+df = pd.read_csv('C:\\D\\GitHub\\learnPython\\DAT210x-master\\Module4\\datasets\\kidney_disease.csv', index_col = 'id')
+df.dropna(axis = 0, how = 'any', inplace = True)
 
 
 
@@ -32,7 +33,7 @@ labels = ['red' if i=='ckd' else 'green' for i in df.classification]
 # TODO: Use an indexer to select only the following columns:
 #       ['bgr','wc','rc']
 #
-# .. your code here ..
+df = df.loc[:,['bgr','wc','rc']]
 
 
 
@@ -48,8 +49,10 @@ labels = ['red' if i=='ckd' else 'green' for i in df.classification]
 # an appropriate command to coerce these features into the right type.
 #
 # .. your code here ..
-
-
+print(df.dtypes)
+df[['wc']] = df[['wc']].astype('float64')
+df[['rc']] = df[['rc']].astype('float64')
+print(df.dtypes)
 
 # TODO: PCA Operates based on variance. The variable with the greatest
 # variance will dominate. Go ahead and peek into your data using a
@@ -60,7 +63,7 @@ labels = ['red' if i=='ckd' else 'green' for i in df.classification]
 # Hint: If you don't see all three variables: 'bgr','wc' and 'rc', then
 # you probably didn't complete the previous step properly.
 #
-# .. your code here ..
+print(df.describe())
 
 
 
@@ -77,8 +80,9 @@ if scaleFeatures: df = helper.scaleFeatures(df)
 # Ensure your PCA instance is saved in a variable called 'pca',
 # and that the results of your transformation are saved in 'T'.
 #
-# .. your code here ..
-
+pca = PCA(n_components=2, svd_solver='full')
+pca.fit(df)
+T = pca.transform(df)
 
 # Plot the transformed data as a scatter plot. Recall that transforming
 # the data will result in a NumPy NDArray. You can either use MatPlotLib
