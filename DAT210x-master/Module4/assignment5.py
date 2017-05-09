@@ -14,7 +14,7 @@ plt.style.use('ggplot')
 # TODO: Start by creating a regular old, plain, "vanilla"
 # python list. You can call it 'samples'.
 #
-# .. your code here .. 
+samples = []
 
 #
 # TODO: Write a for-loop that iterates over the images in the
@@ -28,7 +28,7 @@ plt.style.use('ggplot')
 # 0-255  to  0.0-1.0  if you'd like, but that will have no
 # effect on the algorithm's results.
 #
-# .. your code here .. 
+y = misc.imread()
 
 
 #
