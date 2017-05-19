@@ -2,8 +2,10 @@ import pandas as pd
 
 import matplotlib.pyplot as plt
 import matplotlib
+from sklearn.cluster import KMeans
 
 matplotlib.style.use('ggplot') # Look Pretty
+plt.close('all')
 
 def showandtell(title=None):
   if title != None: plt.savefig(title + ".png", bbox_inches='tight', dpi=300)
@@ -21,8 +23,9 @@ def showandtell(title=None):
 #
 # TODO: Load up the dataset and take a peek at its head
 # Convert the date using pd.to_datetime, and the time using pd.to_timedelta
-#
-# .. your code here ..
+df = pd.read_csv('C:\\D\\GitHub\\learnPython\\DAT210x-master\\Module5\\Datasets\\CDR.csv')
+df['CallDate'] = pd.to_datetime(df['CallDate'])
+df['CallTime'] = pd.to_timedelta(df['CallTime'])
 
 
 #
@@ -30,7 +33,7 @@ def showandtell(title=None):
 # regular python list.
 # Hint: https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.tolist.html
 #
-# .. your code here ..
+users = df['In'].unique().tolist()
 
 
 # 
@@ -38,7 +41,7 @@ def showandtell(title=None):
 # "In" feature (user phone number) is equal to the first number on your unique list above;
 # that is, the very first number in the dataset
 #
-# .. your code here ..
+user1 = df.loc[df['In'] == users[0],:]
 
 
 # INFO: Plot all the call locations
@@ -68,7 +71,7 @@ showandtell()  # Comment this line out when you're ready to proceed
 # TODO: Add more filters to the user1 slice you created. Add bitwise logic so that you're
 # only examining records that came in on weekends (sat/sun).
 #
-# .. your code here ..
+user1 = user1.loc[(user1['DOW']=='Sat') | (user1['DOW']=='Sun'),:]
 
 
 #
@@ -79,8 +82,7 @@ showandtell()  # Comment this line out when you're ready to proceed
 # You might also want to review the Data Manipulation section for this. Once you have your filtered
 # slice, print out its length:
 #
-# .. your code here ..
-
+user1 = user1.loc[(user1['CallTime']<'06:00:00') | (user1['CallTime']>'22:00:00'),:]
 
 #
 # INFO: Visualize the dataframe with a scatter plot as a sanity check. Since you're familiar
@@ -113,10 +115,11 @@ showandtell()  # TODO: Comment this line out when you're ready to proceed
 # plot. Use a distinguishable marker and color.
 #
 # Hint: Make sure you graph the CORRECT coordinates. This is part of your domain expertise.
-#
-# .. your code here ..
+model = KMeans(n_clusters = 1)
+model.fit(user1[['TowerLat','TowerLon']])
 
-
+centroids = model.cluster_centers_
+print(str(centroids))
 showandtell()  # TODO: Comment this line out when you're ready to proceed
 
 
