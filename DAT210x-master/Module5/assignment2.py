@@ -23,7 +23,7 @@ def showandtell(title=None):
 #
 # TODO: Load up the dataset and take a peek at its head
 # Convert the date using pd.to_datetime, and the time using pd.to_timedelta
-df = pd.read_csv('C:\\D\\GitHub\\learnPython\\DAT210x-master\\Module5\\Datasets\\CDR.csv')
+df = pd.read_csv('C:\\Users\\pjbca\\Documents\\GitHub\\learnPython\\DAT210x-master\\Module5\\Datasets\\CDR.csv')
 df['CallDate'] = pd.to_datetime(df['CallDate'])
 df['CallTime'] = pd.to_timedelta(df['CallTime'])
 
