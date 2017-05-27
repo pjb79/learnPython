@@ -2,9 +2,15 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
+from sklearn.model_selection import train_test_split
+from sklearn import preprocessing
+from sklearn.decomposition import PCA
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
 
 matplotlib.style.use('ggplot') # Look Pretty
-
+plt.close('all')
 
 def plotDecisionBoundary(model, X, y):
   fig = plt.figure()
@@ -52,21 +58,23 @@ def plotDecisionBoundary(model, X, y):
 # loading your data properly--don't fail on the 1st step!
 #
 # .. your code here ..
-
+X = pd.read_csv('C:\\D\\GitHub\\learnPython\\DAT210x-master\\Module5\\Datasets\\wheat.data',index_col ='id')
 
 
 #
 # TODO: Copy the 'wheat_type' series slice out of X, and into a series
 # called 'y'. Then drop the original 'wheat_type' column from the X
 #
-# .. your code here ..
+Y = X.loc[:,['wheat_type']]
+X = X.drop('wheat_type',axis = 1)
 
 
 
 # TODO: Do a quick, "ordinal" conversion of 'y'. In actuality our
 # classification isn't ordinal, but just as an experiment...
 #
-# .. your code here ..
+Y['wheat_type'] = Y['wheat_type'].astype("category",
+  ordered=True).cat.codes
 
 
 
@@ -74,7 +82,7 @@ def plotDecisionBoundary(model, X, y):
 # TODO: Basic nan munging. Fill each row's nans with the mean of the feature
 #
 # .. your code here ..
-
+X=X.fillna(X.mean())
 
 
 #
@@ -84,7 +92,7 @@ def plotDecisionBoundary(model, X, y):
 # specify a random_state.
 #
 # .. your code here ..
-
+data_train, data_test, label_train, label_test = train_test_split(X, Y, test_size=0.33, random_state=1)
 
 
 # 
@@ -99,7 +107,7 @@ def plotDecisionBoundary(model, X, y):
 #
 # .. your code here ..
 
-
+T = preprocessing.Normalizer().fit(data_train)
 
 #
 # TODO: With your trained pre-processor, transform both your training AND
@@ -109,7 +117,8 @@ def plotDecisionBoundary(model, X, y):
 # that has ben fit against your training data, so that it exist in the same
 # feature-space as the original data used to train your models.
 #
-# .. your code here ..
+tData_Train = T.transform(data_train)
+tData_Test = T.transform(data_test)
 
 
 
@@ -125,7 +134,11 @@ def plotDecisionBoundary(model, X, y):
 #
 # .. your code here ..
 
+pca = PCA(n_components=2)
+pca.fit(tData_Train)
 
+pcaData_Train = pca.transform(tData_Train)
+pcaData_Test = pca.transform(tData_Test)
 
 
 #
@@ -134,13 +147,14 @@ def plotDecisionBoundary(model, X, y):
 # transformed training data above! You do not, of course, need to transform
 # your labels.
 #
-# .. your code here ..
+knn = KNeighborsClassifier(n_neighbors=1)
+knn.fit(pcaData_Train, label_train['wheat_type'].ravel()) 
 
 
 
 
 # HINT: Ensure your KNeighbors classifier object from earlier is called 'knn'
-plotDecisionBoundary(knn, X_train, y_train)
+plotDecisionBoundary(knn, pcaData_Train, label_train)
 
 
 #------------------------------------
@@ -152,8 +166,8 @@ plotDecisionBoundary(knn, X_train, y_train)
 # .score will take care of running your predictions for you automatically.
 #
 # .. your code here ..
-
-
+a = accuracy_score(label_test, knn.predict(pcaData_Test))
+print(a)
 
 #
 # BONUS: Instead of the ordinal conversion, try and get this assignment

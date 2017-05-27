@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn import preprocessing
+from sklearn.cluster import KMeans
 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -35,7 +36,7 @@ def drawVectors(transformed_features, components_, columns, plt):
   import math
   important_features = { columns[i] : math.sqrt(xvector[i]**2 + yvector[i]**2) for i in range(num_columns) }
   important_features = sorted(zip(important_features.values(), important_features.keys()), reverse=True)
-  print "Projected Features by importance:\n", important_features
+  print ("Projected Features by importance:\n", important_features)
 
   ax = plt.axes()
 
@@ -63,7 +64,8 @@ def doKMeans(data, clusters=0):
   # Hint: Just like with doPCA above, you will have to create a variable called
   # `model`, which is a SKLearn K-Means model for this to work.
   #
-  # .. your code here ..
+  model = KMeans(n_clusters = 1)
+  model.fit(data)
   return model.cluster_centers_, model.labels_
 
 
@@ -73,7 +75,8 @@ def doKMeans(data, clusters=0):
 # for this dataset, since if the value is missing, you can assume no $ was spent
 # on it.
 #
-# .. your code here ..
+df = pd.read_csv('C:\\D\\GitHub\\learnPython\\DAT210x-master\\Module5\\Datasets\\Wholesale customers data.csv')
+
 
 #
 # TODO: As instructed, get rid of the 'Channel' and 'Region' columns, since
@@ -81,7 +84,7 @@ def doKMeans(data, clusters=0):
 # than a national / international one. Leaving these fields in here would cause
 # KMeans to examine and give weight to them.
 #
-# .. your code here ..
+df = df.drop(['Channel','Region'], axis = 1)
 
 
 #
@@ -89,7 +92,8 @@ def doKMeans(data, clusters=0):
 # K-Means, it's a good idea to get a quick peek at it. You can do this using the
 # .describe() method, or even by using the built-in pandas df.plot.hist()
 #
-# .. your code here ..
+print(df.describe())
+#df.plot.hist()
 
 
 #
@@ -121,9 +125,9 @@ for col in df.columns:
 # to, if there is a single row that satisfies the drop for multiple columns.
 # Since there are 6 rows, if we end up dropping < 5*6*2 = 60 rows, that means
 # there indeed were collisions.
-print "Dropping {0} Outliers...".format(len(drop))
+print ("Dropping {0} Outliers...".format(len(drop)))
 df.drop(inplace=True, labels=drop.keys(), axis=0)
-print df.describe()
+print (df.describe())
 
 
 #
@@ -178,8 +182,8 @@ print df.describe()
 #T = preprocessing.StandardScaler().fit_transform(df)
 #T = preprocessing.MinMaxScaler().fit_transform(df)
 #T = preprocessing.MaxAbsScaler().fit_transform(df)
-#T = preprocessing.Normalizer().fit_transform(df)
-T = df # No Change
+T = preprocessing.Normalizer().fit_transform(df)
+#T = df # No Change
 
 
 #
@@ -201,7 +205,7 @@ centroids, labels = doKMeans(T, n_clusters)
 # TODO: Print out your centroids. They're currently in feature-space, which
 # is good. Print them out before you transform them into PCA space for viewing
 #
-# .. your code here ..
+print(centroids)
 
 
 # Do PCA *after* to visualize the results. Project the centroids as well as 
@@ -236,6 +240,6 @@ if PLOT_VECTORS: drawVectors(T, display_pca.components_, df.columns, plt)
 
 # Add the cluster label back into the dataframe and display it:
 df['label'] = pd.Series(labels, index=df.index)
-print df
+print(df)
 
 plt.show()

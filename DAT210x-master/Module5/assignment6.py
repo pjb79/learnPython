@@ -97,7 +97,14 @@ def Plot2DBoundary(DTrain, LTrain, DTest, LTest):
 # num_pixels value, and to rotate the images to being right-side-up
 # instead of sideways. This was demonstrated in the M4/A4 code:
 #
-# .. your code here ..
+mat = scipy.io.loadmat('Datasets/face_data.mat')
+df = pd.DataFrame(mat['images']).T
+num_images, num_pixels = df.shape
+num_pixels = int(math.sqrt(num_pixels))
+
+# Rotate the pictures, so we don't have to crane our necks:
+for i in range(num_images):
+  df.loc[i,:] = df.loc[i,:].reshape(num_pixels, num_pixels).T.reshape(-1)
 
 
 #
