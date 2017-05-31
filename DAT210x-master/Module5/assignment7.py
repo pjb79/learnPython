@@ -2,9 +2,17 @@
 # as the dimensionality reduction technique:
 Test_PCA = True
 
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn import preprocessing
+from sklearn.decomposition import PCA
+from sklearn.manifold import Isomap
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
 
 def plotDecisionBoundary(model, X, y):
-  print "Plotting..."
+  print("Plotting...")
   import matplotlib.pyplot as plt
   import matplotlib
   matplotlib.style.use('ggplot') # Look Pretty
@@ -58,7 +66,8 @@ def plotDecisionBoundary(model, X, y):
 # Be sure to verify the rows line up by looking at the file in a text editor.
 #
 # .. your code here ..
-
+df = pd.read_csv('C:\\Users\\pjbca\\Documents\\GitHub\\learnPython\\DAT210x-master\\Module5\\Datasets\\breast-cancer-wisconsin.data', header = None, names = ['sample', 'thickness', 'size', 'shape', 'adhesion', 'epithelial', 'nuclei', 'chromatin', 'nucleoli', 'mitoses', 'status'], index_col = 'sample')
+df['nuclei'] = pd.to_numeric(df['nuclei'], errors = 'coerce')
 
 
 # 
@@ -70,7 +79,8 @@ def plotDecisionBoundary(model, X, y):
 # If you goofed up on loading the dataset and notice you have a `sample` column,
 # this would be a good place to drop that too if you haven't already.
 #
-# .. your code here ..
+status = df.loc[:,['status']]
+df = df.drop(['status'],axis =1)
 
 
 
@@ -78,8 +88,7 @@ def plotDecisionBoundary(model, X, y):
 # TODO: With the labels safely extracted from the dataset, replace any nan values
 # with the mean feature / column value
 #
-# .. your code here ..
-
+df = df.fillna(df.mean())
 
 
 #
@@ -87,7 +96,7 @@ def plotDecisionBoundary(model, X, y):
 # the reading material, but set the random_state=7 for reproduceability, and keep
 # the test_size at 0.5 (50%).
 #
-# .. your code here ..
+data_train, data_test, label_train, label_test = train_test_split(df, status, test_size=0.5, random_state=7)
 
 
 
@@ -101,7 +110,9 @@ def plotDecisionBoundary(model, X, y):
 # of your dataset actually get transformed?
 #
 # .. your code here ..
-
+T = preprocessing.Normalizer().fit(data_train)
+data_train = T.transform(data_train)
+data_test = T.transform(data_test)
 
 
 
@@ -109,17 +120,21 @@ def plotDecisionBoundary(model, X, y):
 # PCA and Isomap are your new best friends
 model = None
 if Test_PCA:
-  print "Computing 2D Principle Components"
+  print ("Computing 2D Principle Components")
   #
   # TODO: Implement PCA here. Save your model into the variable 'model'.
   # You should reduce down to two dimensions.
   #
   # .. your code here ..
 
+  pca = PCA(n_components = 2)
+  pca.fit(data_train)
+  data_train = pca.transform(data_train)
+  data_test = pca.transform(data_test)
   
 
 else:
-  print "Computing 2D Isomap Manifold"
+  print ("Computing 2D Isomap Manifold")
   #
   # TODO: Implement Isomap here. Save your model into the variable 'model'
   # Experiment with K values from 5-10.
@@ -127,6 +142,10 @@ else:
   #
   # .. your code here ..
   
+  iso = Isomap(n_neighbors=5, n_components=2)
+  iso.fit(data_train)
+  data_train = iso.transform(data_train)
+  data_test = iso.transform(data_test)
 
 
 
@@ -135,7 +154,7 @@ else:
 # data_train and data_test using your model. You can save the results right
 # back into the variables themselves.
 #
-# .. your code here ..
+
 
 
 
@@ -147,7 +166,8 @@ else:
 # general (high-K). You should also experiment with how changing the weights
 # parameter affects the results.
 #
-# .. your code here ..
+knn = KNeighborsClassifier(n_neighbors=1)
+knn.fit(data_train, label_train['status']) 
 
 
 
@@ -167,6 +187,7 @@ else:
 # TODO: Calculate + Print the accuracy of the testing set
 #
 # .. your code here ..
+a = accuracy_score(label_test, knn.predict(data_test))
+print(a)
 
-
-plotDecisionBoundary(knmodel, X_test, y_test)
+plotDecisionBoundary(knn, data_test, label_test)
