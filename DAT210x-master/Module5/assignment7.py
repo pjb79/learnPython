@@ -66,7 +66,9 @@ def plotDecisionBoundary(model, X, y):
 # Be sure to verify the rows line up by looking at the file in a text editor.
 #
 # .. your code here ..
-df = pd.read_csv('C:\\Users\\pjbca\\Documents\\GitHub\\learnPython\\DAT210x-master\\Module5\\Datasets\\breast-cancer-wisconsin.data', header = None, names = ['sample', 'thickness', 'size', 'shape', 'adhesion', 'epithelial', 'nuclei', 'chromatin', 'nucleoli', 'mitoses', 'status'], index_col = 'sample')
+dataPath = 'C:\\D\\GitHub\\learnPython\\DAT210x-master\\Module5\\Datasets\\breast-cancer-wisconsin.data'
+#dataPath = 'C:\\Users\\pjbca\\Documents\\GitHub\\learnPython\\DAT210x-master\\Module5\\Datasets\\breast-cancer-wisconsin.data'
+df = pd.read_csv(dataPath, header = None, names = ['sample', 'thickness', 'size', 'shape', 'adhesion', 'epithelial', 'nuclei', 'chromatin', 'nucleoli', 'mitoses', 'status'], index_col = 'sample')
 df['nuclei'] = pd.to_numeric(df['nuclei'], errors = 'coerce')
 
 
@@ -110,7 +112,12 @@ data_train, data_test, label_train, label_test = train_test_split(df, status, te
 # of your dataset actually get transformed?
 #
 # .. your code here ..
-T = preprocessing.Normalizer().fit(data_train)
+#T = preprocessing.Normalizer().fit(data_train)
+#T = preprocessing.StandardScaler().fit(data_train)
+T = preprocessing.MinMaxScaler().fit(data_train)
+#T = preprocessing.MaxAbsScaler().fit(data_train)
+#T = df # No Change
+
 data_train = T.transform(data_train)
 data_test = T.transform(data_test)
 
@@ -166,7 +173,7 @@ else:
 # general (high-K). You should also experiment with how changing the weights
 # parameter affects the results.
 #
-knn = KNeighborsClassifier(n_neighbors=1)
+knn = KNeighborsClassifier(n_neighbors=3, weights = 'distance')
 knn.fit(data_train, label_train['status']) 
 
 

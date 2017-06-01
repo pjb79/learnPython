@@ -2,7 +2,11 @@ import pandas as pd
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+from sklearn import linear_model
 
+
+
+plt.close('all')
 matplotlib.style.use('ggplot') # Look Pretty
 
 
@@ -15,9 +19,9 @@ def drawLine(model, X_test, y_test, title):
   ax.scatter(X_test, y_test, c='g', marker='o')
   ax.plot(X_test, model.predict(X_test), color='orange', linewidth=1, alpha=0.7)
 
-  print "Est 2014 " + title + " Life Expectancy: ", model.predict([[2014]])[0]
-  print "Est 2030 " + title + " Life Expectancy: ", model.predict([[2030]])[0]
-  print "Est 2045 " + title + " Life Expectancy: ", model.predict([[2045]])[0]
+  print ("Est 2014 " + title + " Life Expectancy: ", model.predict([[2014]])[0])
+  print ("Est 2030 " + title + " Life Expectancy: ", model.predict([[2030]])[0])
+  print ("Est 2045 " + title + " Life Expectancy: ", model.predict([[2045]])[0])
 
   score = model.score(X_test, y_test)
   title += " R2: " + str(score)
@@ -32,8 +36,8 @@ def drawLine(model, X_test, y_test, title):
 # As usual, do a .describe and a print of your dataset and
 # compare it to the dataset loaded in a text file or in a
 # spread sheet application
-#
-# .. your code here ..
+## .. your code here ..
+df = pd.read_csv('C:\\D\\GitHub\\learnPython\\DAT210x-master\\Module5\\datasets\\life_expectancy.csv',sep=None, engine = 'python')
 
 
 #
@@ -41,8 +45,7 @@ def drawLine(model, X_test, y_test, title):
 # variable called 'model'. Don't actually train or do anything else
 # with it yet:
 #
-# .. your code here ..
-
+model = linear_model.LinearRegression()
 
 
 #
@@ -53,7 +56,14 @@ def drawLine(model, X_test, y_test, title):
 # INFO You might also want to read the note about slicing on the bottom
 # of this document before proceeding.
 #
-# .. your code here ..
+# 
+ind = df['Year'] < 1986
+x_train = df.loc[ind,['Year']]
+y_train = df.loc[ind,['WhiteMale']]
+
+x_test = df.loc[~ind,['Year']]
+y_test = df.loc[~ind,['WhiteMale']]
+
 
 
 
@@ -65,14 +75,14 @@ def drawLine(model, X_test, y_test, title):
 # given the pre-1986 data you trained it with. It'll also produce a
 # 2030 and 2045 extrapolation.
 #
-# .. your code here ..
-
+model.fit(x_train, y_train)
+drawLine(model, x_test, y_test, 'WhiteMale')
 
 #
 # TODO: Print the actual 2014 WhiteMale life expectancy from your
 # loaded dataset
 #
-# .. your code here ..
+print(df.loc[df['Year'] == 1984,['WhiteMale']])
 
 
 
@@ -82,10 +92,15 @@ def drawLine(model, X_test, y_test, title):
 # model, and then call drawLine. Lastly, print out the actual 2014
 # BlackFemale life expectancy
 #
-# .. your code here ..
+ind = df['Year'] < 1986
+x_train = df.loc[ind,['Year']]
+y_train = df.loc[ind,['BlackFemale']]
 
+x_test = df.loc[~ind,['Year']]
+y_test = df.loc[~ind,['BlackFemale']]
 
-
+#
+print(df.loc[df['Year'] == 1984,['BlackFemale']])
 #
 # TODO: Lastly, print out a correlation matrix for your entire
 # dataset, and display a visualization of the correlation
