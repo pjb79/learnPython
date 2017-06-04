@@ -5,13 +5,19 @@ import pandas as pd
 import numpy as np 
 import time
 
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+
+
+plt.close('all')
 
 # 
 # INFO: Your Parameters.
 # You can adjust them after completing the lab
 C = 1
 kernel = 'linear'
-iterations = 5000   # TODO: Change to 200000 once you get to Question#2
+iterations = 200000   # TODO: Change to 200000 once you get to Question#2
 
 #
 # INFO: You can set this to false if you want to
@@ -87,29 +93,31 @@ def drawPlots(model, X_train, X_test, y_train, y_test, wintitle='Figure 1'):
 
       cnt += 1
 
-  print "Max 2D Score: ", max_2d_score
+  print ("Max 2D Score: ", max_2d_score)
   fig.set_tight_layout(True)
 
 
 def benchmark(model, X_train, X_test, y_train, y_test, wintitle='Figure 1'):
-  print '\n\n' + wintitle + ' Results'
+  print ('\n\n' + wintitle + ' Results')
   s = time.time()
   for i in range(iterations):
     #
     # TODO: train the classifier on the training data / labels:
+    model.fit(X_train, y_train) 
     #
     # .. your code here ..
-  print "{0} Iterations Training Time: ".format(iterations), time.time() - s
+  print ("{0} Iterations Training Time: ".format(iterations), time.time() - s)
 
 
   s = time.time()
   for i in range(iterations):
     #
     # TODO: score the classifier on the testing data / labels:
-    #
+    score = model.score(X_test, y_test)
     # .. your code here ..
-  print "{0} Iterations Scoring Time: ".format(iterations), time.time() - s
-  print "High-Dimensionality Score: ", round((score*100), 3)
+    
+  print ("{0} Iterations Scoring Time: ".format(iterations), time.time() - s)
+  print ("High-Dimensionality Score: ", round((score*100), 3))
 
 
 
@@ -119,7 +127,7 @@ def benchmark(model, X_train, X_test, y_train, y_test, wintitle='Figure 1'):
 # Indices shouldn't be doubled, nor weird headers...
 #
 # .. your code here ..
-
+X = pd.read_csv('C:\\Users\\pjbca\\Documents\\GitHub\\learnPython\\DAT210x-master\\Module6\\Datasets\\wheat.data', index_col = 'id')
 
 # INFO: An easy way to show which rows have nans in them
 #print X[pd.isnull(X).any(axis=1)]
@@ -129,7 +137,7 @@ def benchmark(model, X_train, X_test, y_train, y_test, wintitle='Figure 1'):
 # TODO: Go ahead and drop any row with a nan
 #
 # .. your code here ..
-
+X = X.dropna(axis = 0, how = 'any')
 
 
 # 
@@ -147,14 +155,17 @@ def benchmark(model, X_train, X_test, y_train, y_test, wintitle='Figure 1'):
 #
 # .. your code here ..
 
+y = X.loc[:,'wheat_type']
+y = y.map({'canadian':0, 'kama':1, 'rosa':2})
 
+X = X.drop('wheat_type', axis =1)
 
 # 
 # TODO: Split your data into test / train sets
 # Your test size can be 30% with random_state 7.
 # Use variable names: X_train, X_test, y_train, y_test
 #
-# .. your code here ..
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=7)
 
 
 
@@ -162,14 +173,14 @@ def benchmark(model, X_train, X_test, y_train, y_test, wintitle='Figure 1'):
 # TODO: Create an SVC classifier named svc
 # Use a linear kernel, and set the C value to C
 #
-# .. your code here ..
+svc = SVC(kernel='linear', C=C)
 
 
 #
 # TODO: Create an KNeighbors classifier named knn
 # Set the neighbor count to 5
 #
-# .. your code here ..
+knn = KNeighborsClassifier(n_neighbors=5)
 
 
 
