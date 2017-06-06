@@ -1,5 +1,11 @@
 import pandas as pd
 
+import matplotlib.pyplot as plt
+from sklearn import svm
+from sklearn.svm import SVC
+import numpy as np
+
+plt.close('all')
 # The Dataset comes from:
 # https://archive.ics.uci.edu/ml/datasets/Optical+Recognition+of+Handwritten+Digits
 
@@ -31,7 +37,7 @@ def load(path_test, path_train):
 
 def peekData(X_train):
   # The 'targets' or labels are stored in y. The 'samples' or data is stored in X
-  print "Peeking your data..."
+  print ("Peeking your data...")
   fig = plt.figure()
 
   cnt = 0
@@ -45,7 +51,7 @@ def peekData(X_train):
   plt.show()
 
 
-def drawPredictions(X_train, X_test, y_train, y_test):
+def drawPredictions(model, X_train, X_test, y_train, y_test):
   fig = plt.figure()
 
   # Make some guesses
@@ -81,10 +87,9 @@ def drawPredictions(X_train, X_test, y_train, y_test):
 
 #
 # TODO: Pass in the file paths to the .tes and the .tra files
-X_train, X_test, y_train, y_test = load('', '')
+pathData = 'C:\\Users\\pjbca\\Documents\\GitHub\\learnPython\\DAT210x-master\\Module6\\Datasets\\'
+X_train, X_test, y_train, y_test = load(pathData + 'optdigits.tes', pathData + 'optdigits.tra')
 
-import matplotlib.pyplot as plt
-from sklearn import svm
 
 # 
 # Get to know your data. It seems its already well organized in
@@ -97,30 +102,56 @@ peekData(X_train)
 # TODO: Create an SVC classifier. Leave C=1, but set gamma to 0.001
 # and set the kernel to linear. Then train the model on the training
 # data / labels:
-print "Training SVC Classifier..."
+print ("Training SVC Classifier...")
 #
-# .. your code here ..
+index =0
+scoreA = np.zeros((20,20))
+cArray = np.zeros((20,20))
+gArray = np.zeros((20,20))
 
+cIndex =0
+
+for C in np.linspace(1,1,20):
+    gIndex=0    
+    for g in np.linspace(0.001,0.001,20):
+        
+        svc = SVC(kernel='rbf', C=C, gamma = g)
+        svc.fit(X_train, y_train)
 
 
 
 # TODO: Calculate the score of your SVC against the testing data
-print "Scoring SVC Classifier..."
+        print ("Scoring SVC Classifier...")
 #
 # .. your code here ..
-print "Score:\n", score
+        score = svc.score(X_test, y_test)
+        scoreA[cIndex, gIndex] = score
+        cArray[cIndex, gIndex] = C
+        gArray[cIndex, gIndex] = g
+        print ("Score:\n", score, C, g)
+        
+        gIndex +=1
+        
+    cIndex +=1
+
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(xs=cArray.ravel(), ys=gArray.ravel(), zs=scoreA.ravel())
 
 
 # Visual Confirmation of accuracy
-drawPredictions(X_train, X_test, y_train, y_test)
+drawPredictions(svc, X_train, X_test, y_train, y_test)
 
 
 #
 # TODO: Print out the TRUE value of the 1000th digit in the test set
 # By TRUE value, we mean, the actual provided label for that sample
 #
-# .. your code here ..
-print "1000th test label: ", true_1000th_test_value)
+true_10000th_test_value = y_test[999]
+
+print ("1000th test label: ", true_10000th_test_value)
 
 
 #
@@ -129,16 +160,19 @@ print "1000th test label: ", true_1000th_test_value)
 # INFO: If you get a warning on your predict line, look at the
 # notes from the previous module's labs.
 #
-# .. your code here ..
-print "1000th test prediction: ", guess_1000th_test_value
+guess_10000th_test_value = svc.predict(X_test.iloc[999,:])
+print ("1000th test prediction: ", guess_10000th_test_value)
 
 
 #
 # TODO: Use IMSHOW to display the 1000th test image, so you can
 # visually check if it was a hard image, or an easy image
 #
-# .. your code here ..
 
+plt.figure
+plt.subplot(1,1,1)
+plt.imshow(X_test.iloc[999,:].reshape(8,8), cmap=plt.cm.gray_r, interpolation='nearest')
+plt.show()
 
 #
 # TODO: Were you able to beat the USPS advertised accuracy score
