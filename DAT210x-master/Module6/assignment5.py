@@ -11,7 +11,7 @@ import pandas as pd
 # Header information is on the dataset's website at the UCI ML Repo
 # Check NA Encoding
 #
-# .. your code here ..
+X = pd.read_csv('C:\Users\pjbca\Documents\GitHub\learnPython\DAT210x-master\Module6\Datasets\agaricus-lepiota.data')
 
 # INFO: An easy way to show which rows have nans in them
 #print X[pd.isnull(X).any(axis=1)]
@@ -21,7 +21,7 @@ import pandas as pd
 # TODO: Go ahead and drop any row with a nan
 #
 # .. your code here ..
-print X.shape
+print (X.shape)
 
 
 #
@@ -58,7 +58,7 @@ print X.shape
 # TODO: score the classifier on the testing data / labels:
 #
 # .. your code here ..
-print "High-Dimensionality Score: ", round((score*100), 3)
+print ("High-Dimensionality Score: ", round((score*100), 3))
 
 
 #
